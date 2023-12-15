@@ -1,0 +1,38 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model IEnumerable< Implementacija.Models.RegistracijaKoncerta>
+
+@{
+    ViewData["Title"] = "Concerts";
+}
+
+<h2>Concerts</h2>
+<a asp-action="Register">Pošalji poruku</a>
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Naziv</th>
+                <th>Datum</th>
+                <th>Izvođač</th>
+                <th>Žanr</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var koncert in Model)
+            {
+                <tr>
+                    <td>@koncert.naziv</td>
+                    <td>@koncert.datum.ToString("dd.MM.yyyy.")</td>
+                    <td>@koncert.izvodjacId</td>
+                    <td>@koncert.zanr.ToString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Trenutno nema dostupnih koncerata.</p>
+}

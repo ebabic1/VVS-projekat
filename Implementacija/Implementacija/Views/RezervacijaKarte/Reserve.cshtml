@@ -1,0 +1,78 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.RezervacijaKarte
+@{
+    ViewData["Title"] = "Reserve";
+    Model.koncertId = Model.koncert.Id;
+    dynamic data = ViewBag.Data;
+}
+@using Implementacija.Services
+@inject IRezervacijaManager rezervacijaManager
+@inject IKoncertManager koncertManager
+<h1>Reserve</h1>
+
+<h4>RezervacijaKarte</h4>
+<hr />
+<div class="row">
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.koncert.naziv)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.koncert.naziv)
+        </dd>
+    </dl>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-4">
+        <form asp-action="CreateReserve">
+            <div class="form-group">
+                <label>Ticket Type:@data["PARTER"]</label><br>
+                @{
+                    var types = Enum.GetValues(typeof(TipMjesta));
+                    <select class="form-control" id="typeSeat" onchange="calculateTicketPrice()">
+                        @foreach (var type in types)
+                        {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
+                }
+                @Html.HiddenFor(x => x.koncertId)
+            </div>
+            <div class="form-group">
+                <label for="ticketPrice">Ticket Price:</label>
+                <input class="form-control" id="ticketPrice" readonly>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Remaining Tickets</h5>
+                <p class="card-text">@koncertManager.GetRemainingSeats(Model.koncert)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateTicketPrice() {
+        var element = document.getElementById("typeSeat");
+        var price = document.getElementById("ticketPrice");
+        const type = element.options[element.selectedIndex].text;
+        var vb = JSON.parse('@Html.Raw(Json.Serialize(@data))')
+        ticketPrice.value = vb[type]
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

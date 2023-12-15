@@ -1,0 +1,37 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@using Implementacija.Services;
+@model IEnumerable<Implementacija.Models.Poruka>
+@inject IPorukaManager PorukaManager
+@{
+    ViewData["Title"] = "Messages";
+    var messages = PorukaManager.GetAll();
+}
+
+<h1>Vaše poruke</h1>
+
+<p>
+    <a asp-action="Create">Pošalji poruku</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.sadrzaj)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in messages) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.sadrzaj)
+            </td>
+            <td style="text-align : end;"> 
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

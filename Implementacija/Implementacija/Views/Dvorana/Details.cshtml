@@ -1,0 +1,50 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.Dvorana
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Dvorana</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.nazivDvorane)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.nazivDvorane)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.adresaDvorane)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.adresaDvorane)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.brojSjedista)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.brojSjedista)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.iznajmljivac)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.iznajmljivac.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+    @if (User.IsInRole("Izvodjac"))
+    {
+        <div>
+            <a asp-controller="RezervacijaDvorane" asp-action="Reserve" asp-route-id="@Model.Id" class="btn-reservation">Reserve</a>
+        </div>
+    }
+</div>

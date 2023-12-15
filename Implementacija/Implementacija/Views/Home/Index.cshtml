@@ -1,0 +1,427 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@using Implementacija.Services
+@using Microsoft.AspNetCore.Identity
+@using System.Web
+@model IEnumerable<Implementacija.Models.Koncert>
+@inject IKoncertManager koncertManager
+@inject IKartaManager TicketManager
+@inject IDvoranaManager dvoranaManager
+@inject IRezervacijaManager rezervacijaManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+    var recommended = koncertManager.GetRecommended();
+    var owned = TicketManager.GetOwned(UserManager.GetUserId(User));
+    var concertHalls = await dvoranaManager.GetAll();
+    var concerHallsThatAreNotTaken = await dvoranaManager.GetUnreserved();
+    var reservedConcertHalls = await dvoranaManager.GetReservedByCurrentPerformer();
+    var ownedHalls = await dvoranaManager.GetOwnedByCurrentRenter();
+    var reservedHalls = await dvoranaManager.GetReservations();
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: start;
+        }
+        .image-container {
+            height: 25em;
+            overflow: hidden;
+        }
+        img {
+            width: 100%;
+        }
+
+        .description {
+            margin-top: 3%;
+            color: darkgray;
+            font-size: 1.5em;
+        }
+
+            .description b {
+                font-weight: bold;
+            }
+
+        table {
+            margin-top: 2%;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid lightgray;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+    <span class="text-danger">@TempData["ErrorMessage"]</span>
+    <br />
+    <h2>Aktuelni koncerti</h2>
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-default" /> |
+                <a asp-action="Index">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th><a asp-action="Index" asp-route-aktuelniSortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.naziv)</a></th>
+                <th><a asp-action="Index" asp-route-aktuelniSortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.datum)</a></th>
+                <th>Izvođač</th>
+                <th>Žanr</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Koncert concert in Model)
+            {
+                <!--Za vlasnika samo prikazujemo koncerte  koji su u njegovim dvoranama-->
+                @if (!User.IsInRole("Iznajmljivac") || rezervacijaManager.HasReservation(concert.izvodjacId))
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => concert.naziv)</td>
+                        <td>@Html.DisplayFor(modelItem => concert.datum)</td>
+                        <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(concert.izvodjacId).Result.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => concert.zanr)</td>
+                        <td>
+                            @if (User.IsInRole("ObicniKorisnik"))
+                            {
+                                <a class="details-link" asp-controller="Koncert" asp-action="Details" asp-route-id="@concert.Id">Details</a>
+                            }
+                            @if (User.IsInRole("Iznajmljivac"))
+                            {
+                                <a class="details-link" asp-controller="Koncert" asp-action="Delete" asp-route-id="@concert.Id">Delete</a>
+                            }
+                        </td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <br />
+    @if (User.IsInRole("ObicniKorisnik"))
+    {
+        <h2>Preporučeni koncerti</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Izvođač</th>
+                    <th>Žanr</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in recommended)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.naziv)</td>
+                    <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.izvodjacId).Result.UserName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.zanr)</td>
+                    <td>
+                        <a class="details-link" asp-controller="Koncert" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>}
+    <br />
+
+    @if (User.IsInRole("Izvodjac"))
+    {
+        <br />
+        <h2>Dvorane</h2>
+        @if (User.IsInRole("Iznajmljivac"))
+        {
+            <p><a asp-controller="Dvorana" asp-action="Create">Create New</a></p>
+        }
+        <table>
+            <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Iznajmljivac</th>
+                    <th>Broj Sjedista</th>
+                    <th>Adresa</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (User.IsInRole("Iznajmljivac"))
+                {
+                    @foreach (var item in concertHalls)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.nazivDvorane)</td>
+                            <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.iznajmljivacId).Result.UserName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.brojSjedista)</td>
+                            <td>@Html.DisplayFor(modelItem => item.adresaDvorane)</td>
+                            <td>
+                                <a class="details-link" asp-controller="Dvorana" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                @if (User.IsInRole("Izvodjac"))
+                {
+                    @foreach (var item in concerHallsThatAreNotTaken)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.nazivDvorane)</td>
+                            <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.iznajmljivacId).Result.UserName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.brojSjedista)</td>
+                            <td>@Html.DisplayFor(modelItem => item.adresaDvorane)</td>
+                            <td>
+                                <a class="details-link" asp-controller="Dvorana" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+            </tbody>
+        </table>
+    }
+
+    @if (User.IsInRole("Izvodjac"))
+    {
+        <br />
+        <h2>Rezervisane Dvorane</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Iznajmljivac</th>
+                    <th>Broj Sjedista</th>
+                    <th>Adresa</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in reservedConcertHalls)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.nazivDvorane)</td>
+                        <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.iznajmljivacId).Result.UserName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.brojSjedista)</td>
+                        <td>@Html.DisplayFor(modelItem => item.adresaDvorane)</td>
+                        <td>
+                            <a class="details-link" asp-controller="Dvorana" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        </td>
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+    }
+
+    @if (User.IsInRole("ObicniKorisnik"))
+    {
+        <h2>Vaše Karte</h2>
+        @if (owned != null && owned.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th>TipMjesta</th>
+                        <th>Izvođač</th>
+                        <th>Žanr</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in owned.ToList())
+                    {
+                        <tr>
+                            @{
+                                var parameter2 = TicketManager.GetGuy(item.koncertId);
+                            }
+                            <td>@Html.DisplayFor(modelItem => item.koncert.naziv)</td>
+                            <td>@Html.DisplayFor(modelItem => item.tipMjesta)</td>
+                            <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(parameter2).Result.UserName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.koncert.zanr)</td>
+                            <td>
+
+                                <a class="details-link" asp-controller="Koncert" asp-action="Details" asp-route-id="@item.koncertId">Details</a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+            }
+
+    @if (User.IsInRole("Iznajmljivac"))
+    {
+
+        <h2>Vaše Dvorane</h2>
+        @if (ownedHalls != null && ownedHalls.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Iznajmljivac</th>
+                        <th>Broj Sjedista</th>
+                        <th>Adresa</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in ownedHalls.ToList())
+                    {
+
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.nazivDvorane)</td>
+                            <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.iznajmljivacId).Result.UserName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.brojSjedista)</td>
+                            <td>@Html.DisplayFor(modelItem => item.adresaDvorane)</td>
+                            <td>
+                                <a class="details-link" asp-controller="Dvorana" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+        }
+
+
+        else
+        {
+            <b>Trenutno nemate dvorana.</b>
+        }
+    }
+    @if (User.IsInRole("Iznajmljivac"))
+    {
+        <h2>Vaše Rezervisane Dvorane</h2>
+        @if (reservedHalls != null && reservedHalls.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dvorana</th>
+                        <th>Izvodjac</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in reservedHalls.ToList())
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.dvorana.nazivDvorane)</td>
+                            <td>@Html.DisplayFor(modelItem => UserManager.FindByIdAsync(item.izvodjacId).Result.UserName)</td>
+                            <td>
+                                <a class="details-link" asp-controller="Koncert" asp-action="CreateKoncert" asp-route-id="@item.izvodjacId">Details</a>
+                                <a class="details-link" asp-controller="RezervacijaDvorane" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+        }
+        else
+        {
+            <b>Trenutno nemate rezervacija dvorana.</b>
+        }
+    }
+    <div class="container mt-4">
+        <div class="border border-secondary-subtle rounded p-3">
+            <h2 class="text-center mb-3">Find our location</h2>
+            <div id="myMap" class="w-100" style="position:relative; height:400px;"></div>
+        </div>
+    </div>
+
+    <script type='text/javascript'
+            src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap' async
+            defer></script>
+
+    <script type='text/javascript'>
+        function GetMap() {
+            var map = new Microsoft.Maps.Map('#myMap', {
+                credentials: 'AvtaHEtWRN8GQzruJcqDKqVEWl5S8Jpv2-fj6wkPJQ8fmtceyOd6dwEGjeygr_pE',
+                center: new Microsoft.Maps.Location(43.8456158828912, 18.351681739038114),
+                center1: new Microsoft.Maps.Location(42.8456158828912, 17.351681739038114),
+                center2: new Microsoft.Maps.Location(44.8456158828912, 19.351681739038114),
+                mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                zoom: 8
+            });
+            infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                visible: false
+            });
+            infobox.setMap(map);
+            var zetra = new Microsoft.Maps.Location(43.87280114917132, 18.413401096528254);
+            var skenderija = new Microsoft.Maps.Location(43.854738048560485, 18.41497423453561);
+            var pozoriste = new Microsoft.Maps.Location(43.85729198693993, 18.42062292389386);
+            var pin = new Microsoft.Maps.Pushpin(zetra);
+            var pin2 = new Microsoft.Maps.Pushpin(skenderija);
+            var pin3 = new Microsoft.Maps.Pushpin(pozoriste);
+            pin.metadata = {
+                title: 'Olimpijska dvorana "Juan Antonio Samaranch',
+                description: 'Alipašina bb Bjelašnica - Babin do Sarajevo, 71000'
+
+            };
+            pin2.metadata = {
+                title: 'Dvorana Mirza Delibašić',
+                description: 'VC37+RJC, Sarajevo 71000'
+            };
+            pin3.metadata = {
+                title: 'Narodno pozorište Sarajevo',
+                description: 'Obala Kulina bana 9, Sarajevo 71000'
+            };
+            Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+            map.entities.push(pin);
+            Microsoft.Maps.Events.addHandler(pin2, 'click', pushpinClicked);
+            map.entities.push(pin2);
+            Microsoft.Maps.Events.addHandler(pin3, 'click', pushpinClicked);
+            map.entities.push(pin3);
+        }
+        function pushpinClicked(e) {
+            if (e.target.metadata) {
+                infobox.setOptions({
+                    location: e.target.getLocation(),
+                    title: e.target.metadata.title,
+                    description: e.target.metadata.description,
+                    visible: true
+                });
+            }
+        }
+    </script>
+
+
+</body>
+</html>

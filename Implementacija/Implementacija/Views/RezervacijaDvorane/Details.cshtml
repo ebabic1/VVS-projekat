@@ -1,0 +1,38 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.RezervacijaDvorane
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>RezervacijaDvorane</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.rezervacija)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.rezervacija.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.izvodjac)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.izvodjac.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.dvorana)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.dvorana.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

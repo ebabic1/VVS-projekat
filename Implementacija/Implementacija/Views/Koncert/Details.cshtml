@@ -1,0 +1,79 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@using Microsoft.AspNetCore.Identity;
+@model Implementacija.Models.Koncert
+@inject UserManager<IdentityUser> _userManager
+@{
+    ViewData["Title"] = "Details";
+}
+<style>
+    .btn-reservation {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-top: 10px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+        .btn-reservation:hover {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+        }
+</style>
+<h1>Details</h1>
+
+<div>
+    <h4>Koncert</h4>
+    </style>
+
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.naziv)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.naziv)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.izvodjacId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => _userManager.FindByIdAsync(model.izvodjacId).Result.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.zanr)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.zanr)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.datum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.datum)
+        </dd>
+    </dl>
+</div>
+<div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+    </div>
+    <a asp-controller="RezervacijaKarte" asp-action="Reserve" asp-route-id="@Model.Id" class="btn-reservation">Reserve Tickets</a>
+</div>
+    <div>
+    <a asp-controller="Recenzija" asp-action="LeaveReview" asp-route-id="@Model.izvodjacId" class="btn-reservation">Leave Review</a>
+</div>

@@ -1,0 +1,47 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.Dvorana
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Dvorana</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.nazivDvorane)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.nazivDvorane)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.adresaDvorane)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.adresaDvorane)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.brojSjedista)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.brojSjedista)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.iznajmljivac)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.iznajmljivac.Id)
+        </dd class>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

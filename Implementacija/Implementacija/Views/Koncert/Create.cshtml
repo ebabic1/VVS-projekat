@@ -1,0 +1,48 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.Koncert
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Koncert</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="naziv" class="control-label"></label>
+                <input asp-for="naziv" class="form-control" />
+                <span asp-validation-for="naziv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="datum" class="control-label"></label>
+                <input asp-for="datum" class="form-control" type="date" />
+            </div>
+            <div class="form-group">
+                <label asp-for="izvodjacId" class="control-label">Izvođač</label>
+                <select asp-for="izvodjacId" class="form-control" asp-items="ViewBag.izvodjacId"><</select>  
+            </div>
+            <div class="form-group">
+                <label asp-for="zanr" class="control-label"></label>
+                <select asp-for="zanr" class="form-control" asp-items="Html.GetEnumSelectList<Zanr>()"></select>
+                <span asp-validation-for="zanr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

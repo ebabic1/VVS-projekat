@@ -1,0 +1,88 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@using Implementacija.Services
+@model IEnumerable<Implementacija.Models.Koncert>
+@inject IKoncertManager koncertManager
+@{
+    ViewData["Title"] = "About us";
+    var concerts = await koncertManager.GetAll();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .image-container {
+            height: 25em;
+            overflow: hidden;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .description {
+            margin-top: 3%;
+            color: black;
+            font-size: 1em;
+        }
+
+        .description b {
+            font-weight: bold;
+            /*color: #fff;*/
+       }
+
+        table {
+            margin-top: 2%;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid lightgray;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        h1 {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>@ViewData["Title"]</h1>
+    <div class="image-container">
+        <img src="https://rare-gallery.com/uploads/posts/5420140-gig-live-music-crowd-performance-performer-people-trombone-arms-up-music-mucisian-musical-dark-party-club-cheering-dj-show-event-group-band-png-images.jpg" alt="Concert Image">
+    </div>
+    <h3 class="description">Aplikacija za koncerte uživo</h3>
+    <div class="description">
+        <b >Ovaj softver je namijenjen da pruži svim ljubiteljima koncerata jednostavan način da brzo i lahko dođu do svih relevantnih informacija potrebnih za rezervaciju mjesta ili karte na aktuelnim događajima u njihovom gradu ili okruženju.</b>
+        <br >
+        Namijenjen je za fizička, kao i pravna lica. Na ovaj način je organizatorima olakšan posao i pružen intuitivan način da reklamiraju svoje dvorane, dok je muzičkim umjetnicima omogućeno da lahko pregledaju sve moguće lokacije svoga nastupa.
+        <br >
+        Kupoprodaja karata daje prosječnom korisniku opciju da brzo i efikasno nađe rezervaciju.
+    </div>
+</body>
+</html>

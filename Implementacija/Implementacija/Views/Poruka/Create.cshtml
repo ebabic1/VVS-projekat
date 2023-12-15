@@ -1,0 +1,52 @@
+﻿@* ExcludeFromCodeCoverage *@
+
+@model Implementacija.Models.Poruka
+
+@{
+    ViewData["Title"] = "Create";}
+<head>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+</head>
+<h1>Nova poruka</h1>
+
+<h4>Unesite sadržaj i primaoca</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="sadrzaj" class="control-label">Sadržaj</label>
+                <textarea asp-for="sadrzaj" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="sadrzaj" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="primalacId" class="control-label">Primalac</label>
+                <select asp-for="primalacId" class="form-control select2" asp-items="ViewBag.primalacId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Pošalji" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Nazad na poruke</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2
+            $('.select2').select2();
+        });
+    </script>
+}
