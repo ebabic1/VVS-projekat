@@ -1,0 +1,19 @@
+﻿{
+    "user": [
+        {
+            "Id": "111",
+            "UserName": "User1",
+            "Email": "user1@example.com"
+        },
+        {
+            "Id": "222",
+            "UserName": "User2",
+            "Email": "user2@example.com"
+        },
+        {
+            "Id": "333",
+            "UserName": "User3",
+            "Email": "user3@example.com"
+        }
+    ]
+}

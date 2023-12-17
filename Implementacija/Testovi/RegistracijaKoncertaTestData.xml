@@ -1,0 +1,17 @@
+﻿<Koncerti>
+	<Koncert>
+		<Id>103</Id>
+		<Naziv>Koncert1</Naziv>
+		<IzvodjacID>12345</IzvodjacID>
+	</Koncert>
+	<Koncert>
+		<Id>104</Id>
+		<Naziv>Koncert2</Naziv>
+		<IzvodjacID>12345</IzvodjacID>
+	</Koncert>
+	<Koncert>
+		<Id>105</Id>
+		<Naziv>Koncert3</Naziv>
+		<IzvodjacID>12345</IzvodjacID>
+	</Koncert>
+</Koncerti>

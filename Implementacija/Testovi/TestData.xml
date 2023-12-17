@@ -1,0 +1,12 @@
+﻿<Izvodjaci>
+	<Izvodjac>
+		<Id>444</Id>
+		<UserName>JohnDoe</UserName>
+		<Email>john@example.com</Email>
+	</Izvodjac>
+	<Izvodjac>
+		<Id>555</Id>
+		<UserName>JaneDoe</UserName>
+		<Email>jane@example.com</Email>
+	</Izvodjac>
+</Izvodjaci>
