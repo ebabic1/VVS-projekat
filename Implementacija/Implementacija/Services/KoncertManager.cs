@@ -17,44 +17,40 @@ namespace Implementacija.Services
         public async Task<IEnumerable<Koncert>> GetAll() => await _db.Koncerti.ToListAsync();
         public IEnumerable<Koncert> GetRecommended()
         {
-            return _db.Koncerti.OrderBy(k => k.zanr).ToList();
+            return _db.Koncerti.OrderBy(k => k.zanr);
         }
         public int GetRemainingSeats(Koncert koncert)
         {
-            if (koncert == null) return 0;
+            if(koncert == null) return 0;
             var rezDvorana = _db.RezervacijaDvorana.Where(rez => rez.izvodjacId == koncert.izvodjacId).FirstOrDefault();
             var dvorana = _db.Dvorane.Where(rez => rez.Id == rezDvorana.dvoranaId).FirstOrDefault();
             var count = _db.RezervacijaKarata.Where(rez => rez.koncertId == koncert.Id).Count();
             return dvorana.brojSjedista - count;
         }
-        public async Task<IEnumerable<Koncert>> SortAktuelni(string? aktuelniSortOrder, string? searchString)
+        public async Task<IEnumerable<Koncert>> SortAktuelni(string aktuelniSortOrder, string searchString)
         {
             var koncerti = await GetAll();
             if (!String.IsNullOrEmpty(searchString))
             {
                 koncerti = koncerti.Where(s => s.naziv?.Contains(searchString) == true).ToList();
             }
-
             switch (aktuelniSortOrder)
             {
                 case "name_desc":
-                    koncerti = koncerti.OrderByDescending(s => s.naziv).ToList();
+                    koncerti = koncerti.OrderByDescending(s => s.naziv);
                     break;
                 case "Date":
-                    koncerti = koncerti.OrderBy(s => s.datum).ToList();
+                    koncerti = koncerti.OrderBy(s => s.datum);
                     break;
                 case "date_desc":
-                    koncerti = koncerti.OrderByDescending(s => s.datum).ToList();
+                    koncerti = koncerti.OrderByDescending(s => s.datum);
                     break;
                 default:
-                    koncerti = koncerti.OrderBy(s => s.naziv).ToList();
+                    koncerti = koncerti.OrderBy(s => s.naziv);
                     break;
             }
-
-            return koncerti;
+            return koncerti.ToList();
         }
-
-
     }
-
+    
 }

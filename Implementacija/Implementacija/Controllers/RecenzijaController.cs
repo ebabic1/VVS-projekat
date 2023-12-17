@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Implementacija.Data;
 using Implementacija.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Internal.Account.Manage;
+using Implementacija.Services;
+using System.Security.Claims;
 
 namespace Implementacija.Controllers
 {
@@ -128,8 +134,22 @@ namespace Implementacija.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Update(recenzija);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Update(recenzija);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RecenzijaExists(recenzija.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["izvodjacId"] = new SelectList(_context.Izvodjaci, "Id", "Id", recenzija.izvodjacId);
@@ -161,7 +181,6 @@ namespace Implementacija.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var recenzija = await _context.Recenzije.FindAsync(id);
-            RecenzijaExists(id);
             _context.Recenzije.Remove(recenzija);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System;
 using Implementacija.Models;
 using Implementacija.Data;
 using System.Threading.Tasks;
@@ -9,10 +11,10 @@ namespace Implementacija.Controllers
     [Authorize]
     public class RegistracijaKoncertaController : Controller
     {
-        private ApplicationDbContext _context;
-        public RegistracijaKoncertaController(ApplicationDbContext context)
+        private ApplicationDbContext dd;
+        public RegistracijaKoncertaController(ApplicationDbContext ddd)
         {
-            _context = context;
+            dd = ddd;
         }
         public IActionResult Register()
         {
@@ -23,8 +25,9 @@ namespace Implementacija.Controllers
         [HttpPost]
         public async Task <IActionResult> Register(Koncert koncert)
         {
-            _context.Add(koncert);
-            await _context.SaveChangesAsync();
+            Console.Write(koncert.ToString());
+            dd.Add(koncert);
+            await dd.SaveChangesAsync();
             return RedirectToAction("Confirmation");
         }
 

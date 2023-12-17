@@ -1,11 +1,9 @@
-﻿@* ExcludeFromCodeCoverage *@
-
-@using Implementacija.Services
+﻿@using Implementacija.Services
 @using Microsoft.AspNetCore.Identity
 @using System.Web
 @model IEnumerable<Implementacija.Models.Koncert>
 @inject IKoncertManager koncertManager
-@inject IKartaManager TicketManager
+@inject ITicketManager TicketManager
 @inject IDvoranaManager dvoranaManager
 @inject IRezervacijaManager rezervacijaManager
 @inject UserManager<IdentityUser> UserManager

@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -11,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace Implementacija
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-
     public class Program
     {
         public static void Main(string[] args)

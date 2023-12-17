@@ -1,8 +1,5 @@
-﻿@* ExcludeFromCodeCoverage *@
-@using Implementacija.Services;
+﻿@model IEnumerable<Implementacija.Models.Koncert>
 
-@model IEnumerable<Implementacija.Models.Koncert>
-@inject IRezervacijaManager rezervacijaManager
 @{
     ViewData["Title"] = "Index";
 }
@@ -32,25 +29,22 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-            @if (!User.IsInRole("Iznajmljivac") || rezervacijaManager.HasReservation(item.izvodjacId))
-            {
-                <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.naziv)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.izvodjacId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.zanr)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-                </tr>
-            }
-        }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.naziv)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.izvodjacId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.zanr)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>

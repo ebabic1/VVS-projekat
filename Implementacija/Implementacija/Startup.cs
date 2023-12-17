@@ -1,4 +1,3 @@
-
 using Implementacija.Data;
 using Implementacija.Models;
 using Implementacija.Services;
@@ -13,16 +12,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace Implementacija
 {
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -44,7 +39,7 @@ namespace Implementacija
             services.AddTransient<ApplicationDbContext>();
             services.AddTransient<IKoncertManager, KoncertManager>();
             services.AddTransient<IRezervacijaManager, RezervacijaManager>();
-            services.AddTransient<IKartaManager, KartaManager>();
+            services.AddTransient<ITicketManager, TicketManager>();
             services.AddTransient<IPorukaManager, PorukaManager>();
             services.AddTransient<IDvoranaManager, DvoranaManager>();
             services.AddControllersWithViews();

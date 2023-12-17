@@ -9,23 +9,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Implementacija.Controllers;
 
 namespace Implementacija.Services
 {
     public class PorukaManager : IPorukaManager
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ApplicationDbContext _dbContext;
         private readonly IHttpContextAccessor _contextAccessor;
         public PorukaManager(ApplicationDbContext db, IHttpContextAccessor contextAccessor)
         {
-            _db=db;
+            _dbContext=db;
             _contextAccessor=contextAccessor;
         }
+        //dobavlja id od korisnika
         public string GetUserId()
         {
-            var x = _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return x;
+            return _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
+        //dobavlja sve poruke datog korisnika
         public IEnumerable<Poruka> GetAll()
         {
             return _db.Poruke.Where(poruka => poruka.primalacId == GetUserId()).OrderByDescending(poruka => poruka.Id);

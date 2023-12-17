@@ -27,13 +27,11 @@ namespace Implementacija.Controllers
 
         public async Task<IActionResult> Index(string aktuelniSortOrder, string searchString)
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(aktuelniSortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = aktuelniSortOrder == "Date" ? "date_desc" : "Date";
+           ViewData["NameSortParm"] = String.IsNullOrEmpty(aktuelniSortOrder) ? "name_desc" : "";
+           ViewData["DateSortParm"] = aktuelniSortOrder == "Date" ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
-            var sortedKoncerti = await _koncertManager.SortAktuelni(aktuelniSortOrder, searchString);
-            return View(sortedKoncerti);
+            return View(_koncertManager.SortAktuelni(aktuelniSortOrder, searchString).Result);
         }
-
 
         public IActionResult Privacy()
         {
@@ -47,15 +45,7 @@ namespace Implementacija.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            try
-            {
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occurred while handling error: {ex.Message}");
-                return View(new ErrorViewModel { RequestId = "Error" });
-            }
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

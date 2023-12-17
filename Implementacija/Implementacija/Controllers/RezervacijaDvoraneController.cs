@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,8 +9,10 @@ using Implementacija.Data;
 using Implementacija.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.Identity;
 using Implementacija.Services;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Implementacija.Controllers
 {
@@ -20,6 +24,7 @@ namespace Implementacija.Controllers
 
         public RezervacijaDvoraneController(ApplicationDbContext context, IRezervacijaManager rezervacijaManager)
         {
+            
             _context = context;
             _rezervacijaManager = rezervacijaManager;
         }
@@ -61,10 +66,10 @@ namespace Implementacija.Controllers
                 .Include(r => r.iznajmljivac)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (dvorana == null) return NotFound();
-            var novaRezervacija = new RezervacijaDvorane();
-            novaRezervacija.dvorana = dvorana;
-            novaRezervacija.dvoranaId=dvorana.Id;
-            return View(novaRezervacija);
+            var rezervacija1 = new RezervacijaDvorane();
+            rezervacija1.dvorana = dvorana;
+            rezervacija1.dvoranaId=dvorana.Id;
+            return View(rezervacija1);
 
         }
 
@@ -73,8 +78,8 @@ namespace Implementacija.Controllers
         public async Task<IActionResult> CreateReserve(RezervacijaDvorane rezervacijaDvorane)
         {
             var dvorana = _context.Dvorane.Where(x => x.Id == rezervacijaDvorane.dvoranaId).FirstOrDefault();
-            var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var izvodjac = _context.Izvodjaci.Where(x => x.Id == korisnikId).FirstOrDefault();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var artist = _context.Izvodjaci.Where(x => x.Id == userId).FirstOrDefault();
             if (ModelState.IsValid && _rezervacijaManager.ValidateReservation(dvorana))
             {
                 var rezervacija = new Rezervacija();
@@ -83,8 +88,8 @@ namespace Implementacija.Controllers
                 _context.Add(rezervacija);
                 rezervacijaDvorane.rezervacija = rezervacija;
                 rezervacijaDvorane.rezervacijaId = rezervacija.Id;
-                rezervacijaDvorane.izvodjacId = korisnikId;
-                rezervacijaDvorane.izvodjac = izvodjac;
+                rezervacijaDvorane.izvodjacId = userId;
+                rezervacijaDvorane.izvodjac = artist;
                 rezervacijaDvorane.dvorana = dvorana;
                 rezervacijaDvorane.dvoranaId = dvorana.Id;
                 _context.Add(rezervacijaDvorane);
