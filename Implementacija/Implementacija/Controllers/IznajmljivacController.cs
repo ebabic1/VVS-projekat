@@ -34,7 +34,7 @@ namespace Implementacija.Controllers
             {
                 return NotFound();
             }
-
+            
             var iznajmljivac = await _context.Iznajmljivaci
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (iznajmljivac == null)
@@ -97,7 +97,9 @@ namespace Implementacija.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                _context.Update(iznajmljivac);
+                await _context.SaveChangesAsync();
+                /*try
                 {
                     _context.Update(iznajmljivac);
                     await _context.SaveChangesAsync();
@@ -112,7 +114,7 @@ namespace Implementacija.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction(nameof(Index));
             }
             return View(iznajmljivac);

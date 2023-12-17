@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 namespace Implementacija.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;

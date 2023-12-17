@@ -120,27 +120,14 @@ namespace Implementacija.Controllers
         {
             if (id != koncert.Id)
             {
-                return NotFound();
+                return NotFound(); //provjeri da li postoji taj id, da se osiguramo da baza ne baca izuzetak
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
+                
                     _context.Update(koncert);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KoncertExists(koncert.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
             return View(koncert);

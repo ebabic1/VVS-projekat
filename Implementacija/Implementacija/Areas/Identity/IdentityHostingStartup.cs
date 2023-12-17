@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 [assembly: HostingStartup(typeof(Implementacija.Areas.Identity.IdentityHostingStartup))]
 namespace Implementacija.Areas.Identity
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+
     public class IdentityHostingStartup : IHostingStartup
     {
         public void Configure(IWebHostBuilder builder)

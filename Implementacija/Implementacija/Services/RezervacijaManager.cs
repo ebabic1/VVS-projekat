@@ -24,8 +24,7 @@ namespace Implementacija.Services
         }
         public bool HasReservation(string izvodjacId)
         {
-            var list = _db.RezervacijaDvorana.Where(o => o.izvodjacId == izvodjacId && o.dvorana.iznajmljivac.Id == _porukaManager.GetUserId());
-            return (list.Count() > 0);
+            return _db.RezervacijaDvorana.Any(o => o.izvodjacId == izvodjacId && o.dvorana.iznajmljivac.Id == _porukaManager.GetUserId());
         }
         public async Task<double> calculatePrice(TipMjesta t, int koncertId)
         {
@@ -50,12 +49,10 @@ namespace Implementacija.Services
         // provjeri ima li izvodjac vec rezervaciju
         public bool ValidateReservation(Dvorana d)
         {
-            var i = _porukaManager.GetUserId(); 
+            var id = _porukaManager.GetUserId(); 
             var list = new List<RezervacijaDvorane>();
             //nadji sve rezervacije od trenutnog korisnika
-            list = _db.RezervacijaDvorana.Where(o => o.izvodjacId == i).ToList();
-            if (list.Count == 0) return true;
-            else return false;
+            return !_db.RezervacijaDvorana.Any(o => o.izvodjacId == id);
         }
     }
 }

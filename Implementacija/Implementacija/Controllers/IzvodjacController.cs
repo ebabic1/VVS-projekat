@@ -92,27 +92,14 @@ namespace Implementacija.Controllers
         {
             if (id != izvodjac.Id)
             {
-                return NotFound();
+                return NotFound(); //provjeri da li postoji taj id, da se osiguramo da baza ne baca izuzetak
             }
 
+
             if (ModelState.IsValid)
-            {
-                try
-                {
+            {    
                     _context.Update(izvodjac);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!IzvodjacExists(izvodjac.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
             return View(izvodjac);
@@ -136,7 +123,7 @@ namespace Implementacija.Controllers
             return View(izvodjac);
         }
 
-        // POST: Izvodjac/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

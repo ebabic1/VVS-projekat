@@ -72,10 +72,6 @@ namespace Implementacija.Controllers
         {
             if (ModelState.IsValid)
             {
-                string posiljalac = "Poruka od " + User.Identity.Name + ": ";
-                posiljalac = posiljalac + poruka.sadrzaj;
-                poruka.sadrzaj = posiljalac;
-                poruka.primalacId = _userManager.FindByEmailAsync(poruka.primalacId).Result.Id;
                 _context.Add(poruka);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -115,28 +111,14 @@ namespace Implementacija.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(poruka);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PorukaExists(poruka.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(poruka);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["primalacId"] = new SelectList(_context.ObicniKorisnici, "Id", "Id", poruka.primalacId);
             return View(poruka);
         }
-
         // GET: Poruka/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -104,22 +106,8 @@ namespace Implementacija.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(dvorana);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DvoranaExists(dvorana.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(dvorana);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["iznajmljivacId"] = new SelectList(_context.Iznajmljivaci, "Id", "Id", dvorana.iznajmljivacId);
@@ -153,6 +141,7 @@ namespace Implementacija.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var dvorana = await _context.Dvorane.FindAsync(id);
+            DvoranaExists(id);
             _context.Dvorane.Remove(dvorana);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
