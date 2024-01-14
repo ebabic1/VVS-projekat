@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "394d07e3-c0de-4b7a-88bf-8fbb1fd857f0",
+		"name": "VVS Projekat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31233989"
+	},
+	"item": [
+		{
+			"name": "https://parabank.parasoft.com/parabank/login.htm",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera sadržavanja teksta 'updated customer profile'\", function () {\r",
+							"    pm.expect(responseBody).to.include(\"updated customer profile\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera tačnog teksta 'Successfully updated customer profile'\", function () {\r",
+							"    pm.expect(responseBody).to.equal(\"Successfully updated customer profile\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera minimalne dužine odgovora\", function () {\r",
+							"    pm.expect(responseBody.length).to.be.at.least(10);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "test123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://parabank.parasoft.com/parabank/services_proxy/bank/customers/update/19094?firstName=testiranje&lastName=test&street=test&city=test&state=test&zipCode=test&phoneNumber=test&ssn=test&username=&password=",
+					"protocol": "https",
+					"host": [
+						"parabank",
+						"parasoft",
+						"com"
+					],
+					"path": [
+						"parabank",
+						"services_proxy",
+						"bank",
+						"customers",
+						"update",
+						"19094"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "testiranje"
+						},
+						{
+							"key": "lastName",
+							"value": "test"
+						},
+						{
+							"key": "street",
+							"value": "test"
+						},
+						{
+							"key": "city",
+							"value": "test"
+						},
+						{
+							"key": "state",
+							"value": "test"
+						},
+						{
+							"key": "zipCode",
+							"value": "test"
+						},
+						{
+							"key": "phoneNumber",
+							"value": "test"
+						},
+						{
+							"key": "ssn",
+							"value": "test"
+						},
+						{
+							"key": "username",
+							"value": ""
+						},
+						{
+							"key": "password",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://parabank.parasoft.com/parabank/findtrans.htm",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera da li HTML sadrži pretragu po datumu\", function () {\r",
+							"    var responseBody = pm.response.text();\r",
+							"    var hasLeftMenuClass = responseBody.includes('id=\"criteria.onDate\"');\r",
+							"    pm.expect(hasLeftMenuClass).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera da li HTML sadrži pretragu po id transakcije\", function () {\r",
+							"    var responseBody = pm.response.text();\r",
+							"    var hasLeftMenuClass = responseBody.includes('id=\"criteria.transactionId\"');\r",
+							"    pm.expect(hasLeftMenuClass).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera da li HTML sadrži pretragu po iznosu\", function () {\r",
+							"    var responseBody = pm.response.text();\r",
+							"    var hasLeftMenuClass = responseBody.includes('id=\"criteria.amount\"');\r",
+							"    pm.expect(hasLeftMenuClass).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://parabank.parasoft.com/parabank/findtrans.htm"
+			},
+			"response": []
+		},
+		{
+			"name": "https://parabank.parasoft.com/parabank/services_proxy/bank/createAccount?customerId=13877&newAccountType=0&fromAccountId=16119",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera prisustva polja 'id'\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera tipa polja 'type'\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.type).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Provjera da li je vrednost polja 'balance' nenegativna\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.balance).to.be.at.least(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "https://parabank.parasoft.com/parabank/services_proxy/bank/createAccount?customerId=19094&newAccountType=0&fromAccountId=30438",
+					"protocol": "https",
+					"host": [
+						"parabank",
+						"parasoft",
+						"com"
+					],
+					"path": [
+						"parabank",
+						"services_proxy",
+						"bank",
+						"createAccount"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "19094"
+						},
+						{
+							"key": "newAccountType",
+							"value": "0"
+						},
+						{
+							"key": "fromAccountId",
+							"value": "30438"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
