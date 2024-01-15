@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "4234a745-b428-45aa-b1f5-0d778caf7089",
+		"name": "VVSProjekat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27660102"
+	},
+	"item": [
+		{
+			"name": "https://restful-booker.herokuapp.com/booking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"console.log(jsonData);\r",
+							"pm.environment.set(\"bookingId\", jsonData.bookingid);\r",
+							"\r",
+							"// Validacija 1\r",
+							"pm.test(\"Ime je ispravno\", function () {\r",
+							"    pm.expect(pm.response.json().booking.firstname).to.eql(\"Test\");\r",
+							"});\r",
+							"\r",
+							"//Validacija 2\r",
+							"pm.test(\"Ukupna Cijena je ispravna\", function () {\r",
+							"    pm.expect(pm.response.json().booking.totalprice).to.eql(111);\r",
+							"});\r",
+							"\r",
+							"//Validacija 3\r",
+							"pm.test(\"Status plaćenog depozita je tačan\", function () {\r",
+							"    pm.expect(pm.response.json().booking.depositpaid).to.be.true;\r",
+							"});\r",
+							"\r",
+							"//Validacija 4\r",
+							"pm.test(\"Datum odjave je ispravan\", function () {\r",
+							"    pm.expect(pm.response.json().booking.bookingdates.checkout).to.eql(\"2019-01-01\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\" : \"Test\",\r\n    \"lastname\" : \"Test\",\r\n    \"totalprice\" : 111,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "booking by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"// Očekivane vrijednosti\r",
+							"var ocekivanoIme = \"Test\";\r",
+							"var ocekivanoPrezime = \"Test\";\r",
+							"var ocekivanaUkupnaCijena = 111;\r",
+							"var ocekivanPlacenDepozit = true;\r",
+							"var ocekivaniDatumDolaska = \"2018-01-01\";\r",
+							"var ocekivaniDatumOdlaska = \"2019-01-01\";\r",
+							"\r",
+							"// Validacija 1: Ime je tačno\r",
+							"pm.test('Ime je tačno', function() {\r",
+							"    pm.expect(jsonData.firstname).to.eql(ocekivanoIme);\r",
+							"});\r",
+							"\r",
+							"// Validacija 2: Prezime je tačno\r",
+							"pm.test('Prezime je tačno', function() {\r",
+							"    pm.expect(jsonData.lastname).to.eql(ocekivanoPrezime);\r",
+							"});\r",
+							"\r",
+							"// Validacija 3: Ukupna Cijena je tačna\r",
+							"pm.test('Ukupna Cijena je tačna', function() {\r",
+							"    pm.expect(jsonData.totalprice).to.eql(ocekivanaUkupnaCijena);\r",
+							"});\r",
+							"\r",
+							"// Validacija 4: Status plaćenog depozita je tačan\r",
+							"pm.test('Status plaćenog depozita je tačan', function() {\r",
+							"    pm.expect(jsonData.depositpaid).to.be.true;\r",
+							"});\r",
+							"\r",
+							"// Validacija 5: Datum Dolaska je tačan\r",
+							"pm.test('Datum Dolaska je tačan', function() {\r",
+							"    pm.expect(jsonData.bookingdates.checkin).to.eql(ocekivaniDatumDolaska);\r",
+							"});\r",
+							"\r",
+							"// Validacija 6: Datum Odlaska je tačan\r",
+							"pm.test('Datum Odlaska je tačan', function() {\r",
+							"    pm.expect(jsonData.bookingdates.checkout).to.eql(ocekivaniDatumOdlaska);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking/{{bookingId}}",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking",
+						"{{bookingId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://restful-booker.herokuapp.com/booking?firstname=Test&lastname=Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"var expectedId = pm.environment.get(\"bookingId\");\r",
+							"console.log(expectedId)\r",
+							"// Validacija 1\r",
+							"pm.test(\"Odgovor je validan i ima body\", function () {\r",
+							"     pm.response.to.be.ok;\r",
+							"     pm.response.to.be.withBody;\r",
+							"     pm.response.to.be.json;\r",
+							"});\r",
+							"// Validacija 2\r",
+							"pm.test(\"Kreirani ID je number\", function () {\r",
+							"    jsonData.forEach(function (booking) {\r",
+							"        pm.expect(booking.bookingid).to.be.a(\"number\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"//Validacija 3\r",
+							"pm.test(\"Postoji makar jedan ID\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length).to.be.at.least(1); \r",
+							"    pm.expect(jsonData[0].bookingid).to.exist;\r",
+							"});\r",
+							"\r",
+							"//Validacija 4\r",
+							"pm.test('Kreirani ID je sadržan u nizu', function() {\r",
+							"    pm.expect(_.some(jsonData, { \"bookingid\": expectedId })).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking?firstname=Test&lastname=Test",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					],
+					"query": [
+						{
+							"key": "firstname",
+							"value": "Test"
+						},
+						{
+							"key": "lastname",
+							"value": "Test"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
